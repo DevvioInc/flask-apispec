@@ -49,7 +49,7 @@ class Converter:
             'view': target,
             'path': rule_to_path(rule),
             'operations': {
-                method.lower(): self.get_operation(rule, view, parent=parent)
+                method.lower(): self.get_operation(rule, view, parent=parent, method=method.lower())
                 for method, view in operations.items()
                 if method.lower() in (set(valid_methods) - excluded_methods)
             },
@@ -58,8 +58,12 @@ class Converter:
     def get_operations(self, rule, target):
         return {}
 
-    def get_operation(self, rule, view, parent=None):
+    def get_operation(self, rule, view, parent=None, method=None):
         annotation = resolve_annotations(view, 'docs', parent)
+        if method == 'get':
+            for option in annotation.options:
+                if option.get('requestBody'):
+                    option.pop('requestBody')
         docs = merge_recursive(annotation.options)
         operation = {
             'responses': self.get_responses(view, parent),

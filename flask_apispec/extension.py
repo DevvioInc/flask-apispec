@@ -70,6 +70,7 @@ class FlaskApiSpec:
         if self.app:
             bound()
 
+    # TODO: add authentication or apikey requirement for docs access here
     def add_swagger_routes(self):
         blueprint = flask.Blueprint(
             'flask-apispec',
